@@ -30,7 +30,7 @@ function renderQuestion()
 
 	if (position >= questions.length)
 	{
-		testStatus.innerHTML = "";
+		testStatus.innerHTML = "Test Completed";
 
 		test.innerHTML = "<h2> You Got " + correct + " of " + questions.length + " Questions Correct</h2> <br>"
 						+"<button onclick='restartTest()'> Restart </button>";
