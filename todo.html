@@ -1,0 +1,176 @@
+<html>
+
+<head>
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+
+	<script type="text/javascript">
+
+		function addItem()
+		{
+			var thing = document.getElementById("toDo").value;
+			var cName = document.getElementById("className").value;
+			var dDate = document.getElementById("dueDate").value;
+
+			var toDoItem = {
+				"toDo": thing,
+				"className": cName,
+				"dueDate": dDate
+			}
+
+
+			if (localStorage.getItem('toDos') === null)
+			{
+				var toDos = [];
+
+				try
+				{
+					toDos.push(toDoItem);
+					localStorage.setItem('toDos', JSON.stringify(toDos));
+				}
+
+				catch(e)
+				{
+					localStorage.removeItem('toDos');
+				}
+			}
+
+			else
+			{
+				var toDos = new Array();
+
+				toDos = JSON.parse(localStorage.getItem('toDos'));
+
+				try
+				{
+					toDos.push(toDoItem);
+					localStorage.setItem('toDos', JSON.stringify(toDos));
+				}
+
+				catch(e)
+				{
+					localStorage.removeItem('toDos');
+				}
+			}
+
+			document.getElementById("toDoForm").reset();
+
+			getToDos();
+		}
+
+
+
+		function getToDos()
+		{
+			var toDoResults = document.getElementById("toDoResults");
+
+			var toDos = JSON.parse(localStorage.getItem('toDos'));
+
+			toDoResults.innerHTML = "";
+
+			for (var i = 0; i < toDos.length; i++)
+			{
+				var toDo = toDos[i].toDo;
+				var className = toDos[i].className;
+				var dueDate = toDos[i].dueDate;
+
+				var date = new Date(dueDate);
+				var now = new Date();
+
+				var timeDif = date.getTime() - now.getTime();
+
+				var s = Math.floor(timeDif / 1000);
+				var m = Math.floor(s / 60);
+				var h = Math.floor(m / 60);
+				var d = Math.floor(h / 24);
+
+				toDoResults.innerHTML += '<div class="well">' +
+
+												'<div class="row">' +
+													'<div class="col-md-4">' +
+													'<h3>' + className + '</h3>' +
+													'</div>' +
+													'<div class="col-md-4">' +
+													'<h3>' + toDo + '</h3>' +
+													'</div>' +
+													'<div class="col-md-4">' +
+													'<h3>' + date.toDateString() + '</h3>' +
+													'</div>' +
+													'<div class="col-md-4">' +
+													'<h3> Time Left: ' + d +":"+ h%24 +":"+ m%60 +":"+ s%60 + '</h3>' +
+													'</div>' +
+												'</div>' +
+												'<button class="btn btn-danger" onclick="deleteToDo(\''+toDo+'\')">Delete</button>' +
+										'</div>';
+			}
+
+		}
+
+
+		function deleteToDo(toDo)
+		{
+			var toDos = JSON.parse(localStorage.getItem('toDos'));
+
+			for (var i = 0; i < toDos.length; i++)
+			{
+				if (toDos[i].toDo = toDo)
+				{
+					toDos.splice(i,1);
+				}
+			}
+
+			localStorage.setItem('toDos', JSON.stringify(toDos));
+
+			getToDos();
+		}
+
+	</script>
+
+</head>
+
+<body onload="getToDos()">
+	<div class="container">
+		<div class="jumbotron">
+
+			<h1>To Do List</h1>
+
+			<form id="toDoForm">
+				<div class="form-group" >
+					<div class="row">
+
+						<div class="col-md-12">
+							<label>To Do</label>
+							<input type="text" class="form-control" id="toDo" placeholder="To do...">	
+						</div>
+
+						<div class="col-md-6">
+							<label>Class</label>
+							<input type="text" class="form-control" id="className" placeholder="Class name...">	
+						</div>
+
+						<div class="col-md-6">
+							<label>Due Date</label>
+							<input type="date" class="form-control" id="dueDate">	
+						</div>
+
+					</div>
+				</div>
+				
+			</form>
+
+			<button onclick="addItem()">Add Item</button>
+
+		</div>
+
+		<div class="col-lg-12">
+
+				<div id="toDoResults"></div>
+
+		</div>
+
+	</div>
+
+</body>
+
+
+</html>
